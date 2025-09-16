@@ -1,0 +1,28 @@
+<div class="signup-container">
+  <div class="signup-box">
+    <h2>Sign Up</h2>
+
+    <form (ngSubmit)="signUp()" #signupForm="ngForm">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="username" name="username" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" [(ngModel)]="password" name="password" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Confirm Password</mat-label>
+        <input matInput type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" class="full-width">
+        Sign Up
+      </button>
+
+      <div *ngIf="error" class="error-msg">{{ error }}</div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+
+.mat-column-password {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dashboard-card {
+  margin: 10px;
+  padding: 10px;
+}
+.button-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+/* .table-container {
+  overflow-x: auto;
+  max-height: 400px;
+} */
+
+/* table {
+  width: 100%;
+  min-width: 600px;
+} */
+
+.strength-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6); /* soft outer border */
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);       
+}
+
+/* Strength Colors with glow */
+.strength-dot.weak {
+  background-color: #ff0000de;
+  /* box-shadow: 0 0 6px #ff4d4d, 0 0 12px rgba(255,77,77,0.6); */
+}
+
+.strength-dot.medium {
+  background-color: #ff9900;
+  /* box-shadow: 0 0 6px #ff9900, 0 0 12px rgba(255,153,0,0.6); */
+}
+
+.strength-dot.strong {
+  background-color: #28a745;
+  /* box-shadow: 0 0 6px #28a745, 0 0 12px rgba(40,167,69,0.6); */
+}
+
+
+.strength-legend {
+  margin-top: 12px;
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

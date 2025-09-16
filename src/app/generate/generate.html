@@ -1,0 +1,33 @@
+<mat-card class="password-card">
+    <mat-card-header>
+        <mat-card-title>🔑 Password Generator</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <form class="password-form">
+            <mat-form-field appearance="outline">
+                <mat-label>Password Length</mat-label>
+                <input matInput type="number" [(ngModel)]="length" name="length" min="4" max="64">
+            </mat-form-field>
+
+            <mat-checkbox [(ngModel)]="includeLetters" name="letters">Include Letters</mat-checkbox>
+            <mat-checkbox [(ngModel)]="includeNumbers" name="numbers">Include Numbers</mat-checkbox>
+            <mat-checkbox [(ngModel)]="includeSpecial" name="special">Include Special Characters</mat-checkbox>
+        </form>
+
+        <div class="result">
+            <mat-form-field appearance="fill" class="password-result">
+                <mat-label>Generated Password</mat-label>
+                <input matInput [value]="generatedPassword" readonly>
+                <button mat-icon-button matSuffix (click)="copyPassword()">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+        <button mat-raised-button color="primary" (click)="generatePassword()">Generate</button>
+        <button mat-stroked-button color="warn" (click)="clearPassword()">Clear</button>
+    </mat-card-actions>
+</mat-card>

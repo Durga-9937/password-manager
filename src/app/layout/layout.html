@@ -1,0 +1,44 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <button mat-icon-button (click)="sidenav.toggle()"  matTooltip="Menu" 
+          matTooltipPosition="below">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span class="title">Password Manager</span>
+
+  <span class="spacer"></span>
+    <!-- <span class="username">{{ username }}</span> -->
+      <span class="username-badge">
+    <mat-icon>account_circle</mat-icon>{{ username }}
+  </span>
+  <!-- <button mat-raised-button color="warn" (click)="confirmLogout()">
+    <mat-icon>logout</mat-icon>
+  </button> -->
+  <button mat-icon-button 
+          (click)="confirmLogout()" 
+          matTooltip="Logout" 
+          matTooltipPosition="below">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container class="app-container">
+
+  <mat-sidenav #sidenav mode="side" >
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+   <a mat-list-item routerLink="/generate" routerLinkActive="active-link">
+      <mat-icon>vpn_key</mat-icon>
+      <span>Password Generator</span>
+    </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

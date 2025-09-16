@@ -1,0 +1,64 @@
+<mat-card class="dashboard-card">
+  <div class="button-row">
+    <button mat-raised-button color="primary" (click)="addUser()">
+      <mat-icon>person_add</mat-icon>
+      Add Password
+    </button>
+  </div>
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <!-- Username Column -->
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef> Username </th>
+        <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="password">
+        <th mat-header-cell *matHeaderCellDef> Password </th>
+        <td mat-cell *matCellDef="let element">
+          <span>{{ visiblePasswords[element.username] ? element.password : '••••••' }}</span>
+          <button mat-icon-button (click)="togglePassword(element.username)">
+            <mat-icon>{{ visiblePasswords[element.username] ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+           <span class="strength-dot" [ngClass]="getPasswordStrength(element.password)"></span>
+          
+        </td>
+      </ng-container>
+
+      <!-- Comments Column -->
+      <ng-container matColumnDef="comments">
+        <th mat-header-cell *matHeaderCellDef> Comments </th>
+        <td mat-cell *matCellDef="let element"> {{element.comments}} </td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="edit(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="delete(element)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Table Headers & Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <div class="strength-legend">
+  <span class="legend-item">
+    <span class="strength-dot weak"></span> Weak
+  </span>
+  <span class="legend-item">
+    <span class="strength-dot medium"></span> Medium
+  </span>
+  <span class="legend-item">
+    <span class="strength-dot strong"></span> Strong
+  </span>
+</div>
+</mat-card>

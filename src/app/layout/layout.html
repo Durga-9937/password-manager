@@ -33,6 +33,10 @@
       <mat-icon>vpn_key</mat-icon>
       <span>Password Generator</span>
     </a>
+     <a *ngIf="isAdminUser()" mat-list-item routerLink="/admin" routerLinkActive="active-link">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span>Admin</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 

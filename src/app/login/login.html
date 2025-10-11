@@ -5,7 +5,7 @@
     <form (ngSubmit)="login()" #loginForm="ngForm">
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Username</mat-label>
-        <input matInput [(ngModel)]="username" name="username" required>
+      <input matInput type="email" [(ngModel)]="username" name="username" required email>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">

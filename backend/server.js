@@ -30,37 +30,55 @@ async function getAdminDb() {
   await client.connect();
   return client.db(adminDbName);
 }
-
-// ✅ SIGNUP Route: Creates admin & new DB
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+// SIGNUP Route: Creates admin & new DB
 app.post('/api/signup', async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  if (!username || !password)
-    return res.status(400).json({ message: 'Username and password are required' });
+    if (!username || !password)
+      return res.status(400).json({ message: 'Email and password are required' });
 
-  const adminDb = await getAdminDb();
-  const admins = adminDb.collection(adminsCollection);
+    if (!isValidEmail(username))
+      return res.status(400).json({ message: 'Invalid email format' });
 
-  const existing = await admins.findOne({ username });
-  if (existing)
-    return res.status(400).json({ message: 'Admin already exists' });
+    const adminDb = await getAdminDb();
+    const admins = adminDb.collection(adminsCollection);
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const dbName = `userdatabase_${username}`;
+    const existing = await admins.findOne({ username });
+    if (existing)
+      return res.status(400).json({ message: 'Admin already exists' });
 
-  // Save admin info with DB reference
-  await admins.insertOne({ username, password: hashedPassword, dbName });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  // ✅ Create a new DB for this admin
-  const userDb = client.db(dbName);
-  await userDb.createCollection('users'); // or any starter collection
+    //  sanitize email for DB name
+    const dbName = `userdatabase_${username.replace(/[@.]/g, '_')}`;
 
-  res.status(201).json({ message: `Admin created with DB: ${dbName}` });
+    // Save admin info
+    await admins.insertOne({ username, password: hashedPassword, dbName });
+
+    //  Create per-admin database and a starter collection
+    const userDb = client.db(dbName);
+    await userDb.createCollection('users'); // starter collection
+
+    res.status(201).json({ message: `Admin created with DB: ${dbName}` });
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ message: 'Server error during signup' });
+  }
 });
 
-// ✅ LOGIN Route
+//  LOGIN Route
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
+
+  if (!isValidEmail(username)) {
+    return res.status(400).json({ message: 'Invalid email format' });
+  }
+
   const adminDb = await getAdminDb();
   const admins = adminDb.collection(adminsCollection);
 

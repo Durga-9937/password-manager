@@ -25,6 +25,7 @@ export class Dashboard implements OnInit {
   private secretKey = 'mySecretKey123';
   ngOnInit(): void {
     this.fetchUserData();
+    
   }
   fetchUserData(): void {
     const dbName = this.authService.getDbName();
@@ -135,4 +136,8 @@ export class Dashboard implements OnInit {
 
   return 'weak';
 }
+ applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

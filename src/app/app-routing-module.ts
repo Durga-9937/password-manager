@@ -6,6 +6,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { AuthGuard } from './auth-guard';
 import { Layout } from './layout/layout';
 import { Generate } from './generate/generate';
+import { Admin} from'./admin/admin';
 const routes: Routes = [
    { path: '', component: Login },
     { path: 'signup', component: Signup },
@@ -18,6 +19,7 @@ const routes: Routes = [
        { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: Dashboard },
       { path: 'generate', component: Generate },
+      {path:'admin',component:Admin},
     ]
   },
 ];

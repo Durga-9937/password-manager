@@ -26,6 +26,7 @@ import { Layout } from './layout/layout';
 import { Generate } from './generate/generate';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Admin } from './admin/admin';
+import { RecycleBin } from './recycle-bin/recycle-bin';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { Admin } from './admin/admin';
     Layout,
     Generate,
     Admin,
+    RecycleBin,
   ],
   imports: [
     BrowserModule,

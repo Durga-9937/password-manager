@@ -7,6 +7,7 @@ import { AuthGuard } from './auth-guard';
 import { Layout } from './layout/layout';
 import { Generate } from './generate/generate';
 import { Admin} from'./admin/admin';
+import { RecycleBin } from './recycle-bin/recycle-bin';
 const routes: Routes = [
    { path: '', component: Login },
     { path: 'signup', component: Signup },
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'dashboard', component: Dashboard },
       { path: 'generate', component: Generate },
       {path:'admin',component:Admin},
+      { path: 'recycle-bin', component: RecycleBin }
     ]
   },
 ];

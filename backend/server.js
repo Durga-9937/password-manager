@@ -131,17 +131,97 @@ app.delete('/api/:dbName/users/:id', async (req, res) => {
   try {
     const db = client.db(dbName); // Dynamically select DB
     const usersCollection = db.collection('users');
+    const recycleCollection = db.collection('deleted_users');
 
-    const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+    // Find the user to delete
+    const deletedUser = await usersCollection.findOne({ _id: new ObjectId(id) });
 
-    if (result.deletedCount === 0) {
+    if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json({ message: 'User deleted successfully' });
+    // Insert into recycle bin
+    await recycleCollection.insertOne({
+      ...deletedUser,
+      deletedAt: new Date()
+    });
+
+    // Remove from main users collection
+    await usersCollection.deleteOne({ _id: new ObjectId(id) });
+
+    res.status(200).json({ message: 'User moved to recycle bin successfully' });
+
   } catch (error) {
-    console.error('Delete Error:', error);
-    res.status(500).json({ message: 'Failed to delete user' });
+    console.error(' Delete Error:', error);
+    res.status(500).json({ message: 'Failed to move user to recycle bin' });
+  }
+});
+//  GET Deleted Users (Recycle Bin)
+app.get('/api/:dbName/deleted_users', async (req, res) => {
+  const { dbName } = req.params;
+
+  try {
+    const db = client.db(dbName);
+    const recycleCollection = db.collection('deleted_users');
+
+    const deletedUsers = await recycleCollection
+      .find({})
+      .sort({ deletedAt: -1 }) // optional: newest first
+      .toArray();
+
+    res.status(200).json(deletedUsers);
+  } catch (error) {
+    console.error('Error fetching deleted users:', error);
+    res.status(500).json({ message: 'Failed to fetch deleted users' });
+  }
+});
+// RESTORE Deleted User
+app.post('/api/:dbName/restore/:id', async (req, res) => {
+  const { dbName, id } = req.params;
+
+  try {
+    const db = client.db(dbName);
+    const recycleCollection = db.collection('deleted_users');
+    const usersCollection = db.collection('users');
+
+    // Find user in recycle bin
+    const deletedUser = await recycleCollection.findOne({ _id: new ObjectId(id) });
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found in recycle bin' });
+    }
+
+    // Remove _id to avoid conflict when inserting into users
+    const { _id, deletedAt, ...userData } = deletedUser;
+
+    // Insert back into users
+    await usersCollection.insertOne(userData);
+
+    // Remove from recycle bin
+    await recycleCollection.deleteOne({ _id: new ObjectId(id) });
+
+    res.status(200).json({ message: 'User restored successfully' });
+  } catch (error) {
+    console.error('Restore Error:', error);
+    res.status(500).json({ message: 'Failed to restore user' });
+  }
+});
+// PERMANENTLY DELETE User from recycle bin
+app.delete('/api/:dbName/deleted_users/:id', async (req, res) => {
+  const { dbName, id } = req.params;
+
+  try {
+    const db = client.db(dbName);
+    const recycleCollection = db.collection('deleted_users');
+
+    const result = await recycleCollection.deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'User not found in recycle bin' });
+    }
+
+    res.status(200).json({ message: 'User permanently deleted' });
+  } catch (error) {
+    console.error('Permanent Delete Error:', error);
+    res.status(500).json({ message: 'Failed to permanently delete user' });
   }
 });
 app.put('/api/:dbName/users/:id', async (req, res) => {

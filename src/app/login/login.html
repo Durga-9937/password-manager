@@ -19,6 +19,9 @@
        <button mat-button color="accent" class="full-width" (click)="goToSignup()">
       <mat-icon>person_add</mat-icon>&nbsp;Sign Up
     </button>
+    <button mat-button color="warn" class="full-width" (click)="goToForgotPassword()">
+  <mat-icon>lock_open</mat-icon>&nbsp;Forgot Password?
+</button>
     </form>
 
     <div *ngIf="error" class="error-msg">{{ error }}</div>

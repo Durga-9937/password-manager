@@ -6,8 +6,6 @@ const app = express();
 const port = 3000;
 const cors = require('cors');
 const session = require('express-session');
-
-
 //middleware
 app.use(cors());
 app.use(express.json());
@@ -91,6 +89,84 @@ app.post('/api/login', async (req, res) => {
     return res.status(400).json({ message: 'Invalid username or password' });
   req.session.admin = admin.username;
   res.json({ message: 'Login successful', dbName: admin.dbName });
+});
+
+// Function to generate random 6-digit number
+function generateRandomCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Function to refresh 6-digit codes every 5 minutes
+async function refreshCodes() {
+  try {
+    const db = await getAdminDb();
+    const admins = db.collection(adminsCollection);
+    const allUsers = await admins.find({}).toArray();
+
+    for (const user of allUsers) {
+      const newCode = generateRandomCode();
+      await admins.updateOne(
+        { _id: user._id },
+        { $set: { resetCode: newCode,  } }
+      );
+    }
+    console.log('🔁 Reset codes updated for all users at', new Date().toLocaleTimeString());
+  } catch (err) {
+    console.error('Error refreshing codes:', err);
+  }
+}
+// Run every 5 minutes
+setInterval(refreshCodes, 5 * 60 * 1000);
+refreshCodes();
+// ✅ Reset Password Route
+app.post('/api/forgot-password', async (req, res) => {
+  try {
+    const { username, newPassword, secretKey, resetCode } = req.body;
+
+    if (!username || !newPassword || !secretKey || !resetCode) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Connect to admin DB (modify this as per your DB setup)
+    const adminDb = await getAdminDb();
+    const admins = adminDb.collection(adminsCollection);
+
+    // Find user by email
+    const user = await admins.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Validate secret key (_id)
+    if (user._id.toString() !== secretKey.trim()) {
+      return res.status(401).json({ message: 'Invalid secret key' });
+    }
+    
+    // // Validate reset code
+    // if (user.resetCode !== resetCode.trim()) {
+    //       return res.status(401).json({ message: 'Invalid 6-digit code' });
+    //     }
+  // ✅ Ensure reset code matches exactly (string-safe comparison)
+    const storedCode = (user.resetCode || '').toString().trim();
+    const providedCode = resetCode.toString().trim();
+
+    if (storedCode !== providedCode) {
+      return res.status(401).json({ message: 'Invalid 6-digit code' });
+    }
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password in DB
+    await admins.updateOne(
+      { _id: new ObjectId(secretKey) },
+      { $set: { password: hashedPassword } }
+    );
+
+    res.status(200).json({ message: 'Password reset successfully. Please log in again.' });
+  } catch (err) {
+    console.error('Error in reset-password:', err);
+    res.status(500).json({ message: 'Server error during password reset.' });
+  }
 });
 
 app.get('/api/:dbName/users', async (req, res) => {

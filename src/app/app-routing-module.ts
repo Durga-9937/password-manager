@@ -8,10 +8,12 @@ import { Layout } from './layout/layout';
 import { Generate } from './generate/generate';
 import { Admin} from'./admin/admin';
 import { RecycleBin } from './recycle-bin/recycle-bin';
+import { ForgotPassword } from './forgot-password/forgot-password';
 const routes: Routes = [
    { path: '', component: Login },
     { path: 'signup', component: Signup },
   // { path: 'dashboard', component: Dashboard ,canActivate: [AuthGuard]}
+  {path:'forgot-password',component:ForgotPassword},
   {
     path: '',
     component: Layout,

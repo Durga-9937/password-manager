@@ -40,4 +40,7 @@ export class Login {
    goToSignup() {
     this.router.navigate(['/signup']);
   }
+  goToForgotPassword() {
+  this.router.navigate(['/forgot-password']);
+}
 }

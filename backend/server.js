@@ -110,7 +110,7 @@ async function refreshCodes() {
         { $set: { resetCode: newCode,  } }
       );
     }
-    console.log('🔁 Reset codes updated for all users at', new Date().toLocaleTimeString());
+    // console.log('Reset codes updated for all users at', new Date().toLocaleTimeString());
   } catch (err) {
     console.error('Error refreshing codes:', err);
   }
@@ -118,7 +118,7 @@ async function refreshCodes() {
 // Run every 5 minutes
 setInterval(refreshCodes, 5 * 60 * 1000);
 refreshCodes();
-// ✅ Reset Password Route
+//  Reset Password Route
 app.post('/api/forgot-password', async (req, res) => {
   try {
     const { username, newPassword, secretKey, resetCode } = req.body;
@@ -323,7 +323,24 @@ app.put('/api/:dbName/users/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to update user' });
   }
 });
+//  Get all users (for admin panel)
+app.get('/api/admin', async (req, res) => {
+  try {
+    const db = await getAdminDb(); // your admin DB
+    const admins = db.collection(adminsCollection);
 
+    // Fetch only username and dbName fields (exclude passwords)
+    const users = await admins.find({}, { projection: { username: 1, dbName: 1, _id: 0 } }).toArray();
+
+    // Optionally exclude the admin itself
+    const filteredUsers = users.filter(user => user.username !== 'admin@gmail.com');
+
+    res.status(200).json(filteredUsers);
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    res.status(500).json({ message: 'Error fetching user list' });
+  }
+});
 app.listen(port, () => {
   console.log(`✅ Server running at http://localhost:${port}`);
 });

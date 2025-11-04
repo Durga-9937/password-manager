@@ -42,7 +42,13 @@ app.post('/api/signup', async (req, res) => {
 
     if (!isValidEmail(username))
       return res.status(400).json({ message: 'Invalid email format' });
-
+ const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+])[A-Za-z\d@$!%*?&#^()_+]{8,}$/;
+    if (!strongPasswordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+      });
+    }
     const adminDb = await getAdminDb();
     const admins = adminDb.collection(adminsCollection);
 

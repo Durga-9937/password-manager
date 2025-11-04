@@ -25,6 +25,7 @@ export class Dashboard implements OnInit {
   private secretKey = 'mySecretKey123';
   ngOnInit(): void {
     this.fetchUserData();
+    
   }
   fetchUserData(): void {
     const dbName = this.authService.getDbName();
@@ -34,6 +35,14 @@ export class Dashboard implements OnInit {
         password: CryptoJS.AES.decrypt(user.password, this.secretKey).toString(CryptoJS.enc.Utf8)
       }));
       this.dataSource.data = decryptedData;
+
+       this.dataSource.filterPredicate = (row: any, filter: string) => {
+      const lowerFilter = filter.trim().toLowerCase();
+      return (
+        row.username.toLowerCase().includes(lowerFilter) ||
+        row.comments.toLowerCase().includes(lowerFilter)
+      );
+    };
     });
   }
   addUser() {
@@ -135,4 +144,8 @@ export class Dashboard implements OnInit {
 
   return 'weak';
 }
+ applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

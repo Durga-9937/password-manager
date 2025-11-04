@@ -1,0 +1,38 @@
+<mat-card class="admin-card">
+  <div class="button-row">
+    <h2>Admin Panel - User List</h2>
+
+    <mat-form-field appearance="outline" class="search-bar">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search users">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <!-- Username Column -->
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef> Username </th>
+        <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+      </ng-container>
+
+      <!-- DB Name Column -->
+      <ng-container matColumnDef="dbName">
+        <th mat-header-cell *matHeaderCellDef> Database Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.dbName}} </td>
+      </ng-container>
+
+      <!-- Header and Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center; color: grey;">
+          No users found!
+        </td>
+      </tr>
+    </table>
+  </div>
+</mat-card>

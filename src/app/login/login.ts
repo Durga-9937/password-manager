@@ -18,12 +18,21 @@ export class Login {
   error = '';
 
   constructor(private auth: AuthService,private router: Router) {}
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
   login() {
+     if (!this.isValidEmail(this.username)) {
+      this.error = 'Please enter a valid email address';
+      return;
+    }
     this.auth.login({ username: this.username, password: this.password }).subscribe({
     next: (res: {dbName: string }) => {
       this.auth.loginSuccess(this.username,res.dbName);
       this.auth.setLoginState(true);
       this.auth.redirectToDashboard();
+      
     },
       error: err => this.error = err.error.message
     });
@@ -31,4 +40,7 @@ export class Login {
    goToSignup() {
     this.router.navigate(['/signup']);
   }
+  goToForgotPassword() {
+  this.router.navigate(['/forgot-password']);
+}
 }

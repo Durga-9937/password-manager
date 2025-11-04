@@ -17,8 +17,16 @@ username = '';
 
    constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar ) {}
 
+    private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
   signUp() {
     this.error = '';  
+     if (!this.isValidEmail(this.username)) {
+      this.error = 'Please enter a valid email address';
+      return;
+    }
     if (this.password !== this.confirmPassword) {
       this.error = "Passwords do not match";
       return;

@@ -4,6 +4,12 @@
       <mat-icon>person_add</mat-icon>
       Add Password
     </button>
+  
+    <mat-form-field appearance="outline" class="search-bar">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search here">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
   </div>
   <div class="table-container">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -48,6 +54,11 @@
       <!-- Table Headers & Rows -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center;color: grey;">
+      No data found!
+    </td>
+  </tr>
     </table>
   </div>
   <div class="strength-legend">

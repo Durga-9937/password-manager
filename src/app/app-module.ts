@@ -25,6 +25,9 @@ import { MatListModule } from '@angular/material/list';
 import { Layout } from './layout/layout';
 import { Generate } from './generate/generate';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Admin } from './admin/admin';
+import { RecycleBin } from './recycle-bin/recycle-bin';
+import { ForgotPassword } from './forgot-password/forgot-password';
 
 @NgModule({
   declarations: [
@@ -36,6 +39,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     Signup,
     Layout,
     Generate,
+    Admin,
+    RecycleBin,
+    ForgotPassword,
   ],
   imports: [
     BrowserModule,

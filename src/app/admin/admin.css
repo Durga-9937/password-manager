@@ -1,0 +1,17 @@
+.admin-card {
+  margin: 10px;
+  padding: 10px;
+}
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.search-bar {
+  width: 300px; 
+  height: 48px;
+}
+/* .table-container {
+  overflow-x: auto;
+  max-height: 400px;
+} */

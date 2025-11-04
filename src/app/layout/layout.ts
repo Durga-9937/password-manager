@@ -20,4 +20,7 @@ ngOnInit(): void {
       this.authService.logout();
     }
   }
+   isAdminUser(): boolean {
+    return this.authService.getUsername() === 'admin@gmail.com';
+  }
 }
